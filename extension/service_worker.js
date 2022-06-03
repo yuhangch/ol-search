@@ -8,5 +8,8 @@ importScripts(
     'core/command/open.js',
     'core/command/history.js',
     'core/command/manager.js',
+    'lib/fuse.js',
+    'index/api.js',
+    'search/std.js',
     "load.js", "main.js"
 );

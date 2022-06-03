@@ -1,16 +1,21 @@
 
 const c = new Compat();
-const defaultSuggestion = "Openlayers suggestion";
-const omnibox = new Omnibox(defaultSuggestion, c.omniboxPageSize());
+const search = new StdSearch(API_INDEX);
 (async () => {
+    const API_URL = "https://openlayers.org/en/latest/apidoc/";
     const version = await GetLatestVersion();
-    const apiHTML = await GetAPI();
+    const defaultSuggestion = `Openlayers v${version}`;
+    const omnibox = new Omnibox(defaultSuggestion, c.omniboxPageSize());
     omnibox.bootstrap({
+        //TODO optimized methods search
         onSearch: (query) => {
-            return [{
-                content:"1",
-                description:version
-            }]
+            const result = fuse.search(query);
+            return result.map(i => {
+                return {
+                    content: API_URL + i.item.url,
+                    description: `${c.match(i.item.name)} | ${c.dim(c.escape(i.item.description))}`
+                }
+            })
         }
     }
     )
