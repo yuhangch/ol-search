@@ -5,6 +5,11 @@
   "author": "Yuhang Chen",
   "manifest_version": 3,
   "minimum_chrome_version": "99",
+  "icons": {
+    "16": "icon/ol.png",
+    "48": "icon/ol.png",
+    "128": "icon/ol.png"
+  },
   "omnibox": {
     "keyword": "ol"
   },
