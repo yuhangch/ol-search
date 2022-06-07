@@ -1,18 +1,15 @@
 {
   "name": "ol-search",
   "description": "openlayers search extension",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Yuhang Chen",
   "manifest_version": 3,
-  "minimum_chrome_version": "90",
+  "minimum_chrome_version": "99",
   "omnibox": {
     "keyword": "ol"
   },
   "permissions": [
     "activeTab"
-  ],
-  "host_permissions": [
-    "https://developer.mozilla.org/"
   ],
   "background": {
     "service_worker": "service_worker.js"

@@ -9,7 +9,7 @@ importScripts(
     'core/command/history.js',
     'core/command/manager.js',
     'lib/fuse.js',
-    'index/api.js',
+    'index/api.js', 'index/method.js', 'index/member.js',
     'search/std.js',
     "load.js", "main.js"
 );
