@@ -7,11 +7,11 @@ a browser extension that help you access *openlayers* api doc with autocomplete 
 ### from source
 ```shell
 git clone https://github.com/yuhangch/ol-search.git
-npm install -g web-ext
 cd ol-search 
-make pack # get a ol-search-v{version}.zip
+yarn build
 ```
 ## Use
+> `OL Search` will open a new tab on installed to load index data.
 1. Enter the keyword `ol` in the browser address bar.
 2. Press `Tab` enter ol search.
 3. Enter the keywords e.g. "map".

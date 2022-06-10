@@ -1,1 +1,13 @@
-/web-ext-artifacts
+# dependencies
+/node_modules
+
+# production
+/build
+
+# misc
+.DS_Store
+
+npm-debug.log*
+
+
+.idea
