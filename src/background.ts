@@ -1,10 +1,14 @@
 'use strict';
 
-import {indexStorage, Entry, apidocURL, formatDescription, Decorations} from "./common";
+import {indexStorage, Entry, apidocURL, formatDescription, Decorations, versionStorage} from "./common";
 import Fuse from "fuse.js"
 
 let INDEX: Fuse<Entry>;
 (async () => {
+    const version = await versionStorage.get()
+    chrome.omnibox.setDefaultSuggestion({
+        description:`openlayers ${version}`
+    });
     chrome.runtime.onInstalled.addListener((d) => {
         chrome.storage.local.remove('cache')
         chrome.storage.local.remove('version')
@@ -17,12 +21,22 @@ let INDEX: Fuse<Entry>;
         if (!INDEX) {
             const data = await indexStorage.get()
             INDEX = new Fuse(data, {
-                keys: ['name','longName']
+                keys: ['name', 'longName']
             })
         }
     })
-    chrome.omnibox.onInputEntered.addListener((t, d) => {
-        chrome.tabs.update({url: t});
+    chrome.omnibox.onInputEntered.addListener((url, d) => {
+        switch (d) {
+            case "currentTab":
+                chrome.tabs.update({url});
+                break;
+            case "newForegroundTab":
+                chrome.tabs.create({url});
+                break;
+            case "newBackgroundTab":
+                chrome.tabs.create({url, active: false});
+                break;
+        }
     })
     chrome.omnibox.onInputChanged.addListener((t: string, s) => {
         if (t === "" || !INDEX) {
@@ -33,21 +47,21 @@ let INDEX: Fuse<Entry>;
             return
         }
         const queries = t.split(' ')
-        let result : Fuse.FuseResult<Entry>[];
-        if (queries.length<1)
-         result = INDEX.search(t).slice(0, 8)
+        let result: Fuse.FuseResult<Entry>[];
+        if (queries.length < 1)
+            result = INDEX.search(t,{limit:8})
         else {
-            const keys:any[] = [];
-            queries.forEach(v =>{
+            const keys: any[] = [];
+            queries.forEach(v => {
                 keys.push({
                     name: v,
                 })
                 keys.push({
-                    longName:v,
+                    longName: v,
                 })
             })
             result = INDEX.search({
-                $or:keys,
+                $or: keys,
             })
         }
         s(result.map(i => {
