@@ -1,45 +1,50 @@
 'use strict';
-import {GetIndex, GetLatestVersion, indexStorage, versionStorage} from "./common";
+import {GetIndex, GetLatestIndex, GetLatestVersion, IndexStorage, VersionStorage} from "./common";
 
+const version_element = document.getElementById('version')
+const footer_element = document.getElementById('footer')
+const tick_element = document.getElementById('tick')
+const button_container_element = document.getElementById('button-container')
+const update_button_element = document.getElementById('update-button')
 const setVersion = (version:string) => {
-    const displayVersion = document.getElementById('version')!.innerText;
+    const displayVersion = version_element!.innerText;
     if (version !== displayVersion){
-        document.getElementById('version')!.innerText = version || "ERROR";
+        version_element!.innerText = version || "ERROR";
     }
 }
 const setFooter = (text:string = 'openlayers api autocomplete is ready.') => {
-   document.getElementById('footer')!.innerText = text
+   footer_element!.innerText = text
 }
 const setWarning = () => {
-    document.getElementById("tick")!
+    tick_element!
         .setAttribute('src', 'assets/checkmark-warning.svg')
-    document.getElementById('button-container')!.hidden = false
+    button_container_element!.hidden = false
 }
 const setLatest = () => {
-    document.getElementById("tick")!
+    tick_element!
         .setAttribute('src', 'assets/checkmark-ok.svg')
-    document.getElementById('button-container')!.hidden = true
+    button_container_element!.hidden = true
 }
 import './popup.css';
 (async function () {
-    document.getElementById('update-button')!.addEventListener('click', async () => {
-        const version = await versionStorage.get()
+    update_button_element!.addEventListener('click', async () => {
+        const version = await VersionStorage.get()
         const newVersion = await GetLatestVersion()
         if (version !== newVersion) {
-            const index = await GetIndex()
-            await indexStorage.set(index)
-            await versionStorage.set(newVersion);
+            const index = await GetLatestIndex()
+            await IndexStorage.set(index)
+            await VersionStorage.set(newVersion);
         }
         setVersion(newVersion)
-        setLatest()
         setFooter()
+        setLatest()
     });
-    const version = await versionStorage.get();
+    const version = await VersionStorage.get();
     let newVersion = await GetLatestVersion();
     if (!version) {
         const index = await GetIndex()
-        await indexStorage.set(index);
-        await versionStorage.set(newVersion)
+        await IndexStorage.set(index);
+        await VersionStorage.set(newVersion)
         setLatest()
         setFooter()
         setVersion(newVersion)

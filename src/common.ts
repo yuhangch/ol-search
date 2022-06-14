@@ -1,4 +1,6 @@
-export const indexStorage = {
+import {parse} from 'node-html-parser'
+
+export const IndexStorage = {
     get: async () => {
         const cached = await chrome.storage.local.get(['cache'])
         if (cached && cached['cache']) {
@@ -14,7 +16,7 @@ export const indexStorage = {
         );
     },
 };
-export const versionStorage = {
+export const VersionStorage = {
     get: async () => {
         const cached = await chrome.storage.local.get(['version'])
         if (cached && cached['version']) {
@@ -31,7 +33,6 @@ export const versionStorage = {
     },
 };
 
-
 export interface Entry {
     name: string
     longName: string
@@ -47,13 +48,13 @@ const API_DOC_URL = 'https://openlayers.org/en/latest/apidoc/navigation.tmpl.htm
 export const LoadNavigationHTML = async () => {
     return await fetch(API_DOC_URL).then(text => text.text())
 }
-export const ParseNavigationHTML = (text: string) => {
-    const parser: Document = new DOMParser().parseFromString(text, 'text/html')
-    const entries = parser.querySelectorAll('li.item')
+export const ParseNavigation = (text: string) => {
+    const dom = parse(text)
+    const entries = dom.querySelectorAll('li.item')
     const result = new Array<Entry>()
-    entries.forEach((v: Element) => {
-        const longName = (v.getAttribute('data-longname') as string).slice(7)
-        const type = (v.className.slice(10))
+    entries.forEach((e) => {
+        const longName = e.getAttribute('data-longname')!.toString()
+        const type = e.classNames.slice(10)
         const short = ((long) => {
             let name = long.split('/').slice(-1)[0]
             if (name.indexOf('~'))
@@ -61,18 +62,18 @@ export const ParseNavigationHTML = (text: string) => {
 
             return name
         })(longName)
-        const spans = v.querySelectorAll('span')[0].querySelectorAll('span')
-        const url = (spans[1].querySelector('a') as HTMLAnchorElement).getAttribute('href') as string
+        const spans = e.querySelectorAll('span')[0].querySelectorAll('span')
+        const url = spans[1].querySelector('a') !.getAttribute('href')!.toString()
         result.push({
             longName,
             type,
             name: short,
             url,
         })
-        v.querySelectorAll('div.member-list').forEach((d: Element) => {
+        e.querySelectorAll('div.member-list').forEach((d) => {
             const itemType = (d.getAttribute('data-type') as string).slice(0, -1)
             const items = d.querySelectorAll('a')
-            items.forEach((a: HTMLAnchorElement) => {
+            items.forEach((a) => {
                 const url = a.getAttribute('href') as string
                 const name = a.innerText
                 result.push({
@@ -86,17 +87,31 @@ export const ParseNavigationHTML = (text: string) => {
     })
     return result
 }
-
-export const GetIndex = async () => {
-    let html = await LoadNavigationHTML();
+export const GetLatestIndex = async () => {
+    let html = await LoadNavigationHTML()
     html = html.trim()
-    return ParseNavigationHTML(html);
-}
+    return ParseNavigation(html)
 
+}
+export const GetIndex = async () => {
+    const cached = await IndexStorage.get()
+    if (cached) return cached
+    const data = await GetLatestIndex();
+    await IndexStorage.set(data)
+    return data
+}
+export const GetCurrentVersion = async () => {
+    const cached = await VersionStorage.get()
+    if (cached) return cached
+    const version = await GetLatestVersion()
+    await VersionStorage.set(version)
+    return version
+
+}
 const API_ROOT = "https://openlayers.org/en/latest/apidoc/"
-export const apidocURL = (suffix: string) => `${API_ROOT}${suffix}`
-export const formatDescription = (entry: Entry, text: string) =>
-    ` [${Decorations.URL(entry.type)}] ${Decorations.MATCH(entry.name, [text])} | ${Decorations.DIM(Decorations.MATCH(entry.longName, [text]))}`
+export const buildURL = (suffix: string) => `${API_ROOT}${suffix}`
+export const formatDescription = (entry: Entry, queries: string[]) =>
+    ` [${Decorations.URL(entry.type)}] ${Decorations.MATCH(entry.name, queries)} | ${Decorations.DIM(Decorations.MATCH(entry.longName, queries))}`
 
 export class Decorations {
     static DIM = (text: string) => {

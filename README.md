@@ -1,9 +1,14 @@
 # ol search 🚧
+
 a browser extension that help you access *openlayers* api doc with autocomplete quickly.
+
 ![demo](assets/demo.gif)
+
+> Index was parsed from: https://openlayers.org/en/latest/apidoc/navigation.tmpl.html
+ 
 ## Install
 ### from store
-🙈 *TODO*
+🙈 *TODO*  (Edge in review)
 ### from source
 ```shell
 git clone https://github.com/yuhangch/ol-search.git
@@ -11,7 +16,6 @@ cd ol-search
 yarn build
 ```
 ## Use
-> `OL Search` will open a new tab on installed to load index data.
 1. Enter the keyword `ol` in the browser address bar.
 2. Press `Tab` enter ol search.
 3. Enter the keywords e.g. "map".
@@ -20,9 +24,13 @@ yarn build
 **Chrome/Edge**, due to manifest v3 current not works on Firefox.
 
 ## Roadmap
-- Support Firefox.
 - Install from store.
 - Improve query result.
+- Support Firefox.
+
+## Thanks
+- [rust-search-extension](https://github.com/huhu/rust-search-extension)
+- [mdn-search](https://github.com/hanguokai/mdn-search)
 
 ## License
 [Apache License](LICENCE)
