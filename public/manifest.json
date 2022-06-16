@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "OL Search",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "openlayers search extension",
   "icons": {
     "16": "icons/ol-16.png",
@@ -16,10 +16,26 @@
     "default_title": "OL Search",
     "default_popup": "popup.html"
   },
+  "host_permissions": [
+    "https://openlayers.org/*"
+  ],
   "permissions": [
-    "storage"
+    "tabs",
+    "storage",
+    "scripting"
   ],
   "omnibox": {
     "keyword": "ol"
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "run_at": "document_start",
+      "js": [
+        "contentScript.js"
+      ]
+    }
+  ]
 }

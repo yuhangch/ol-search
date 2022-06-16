@@ -8,7 +8,7 @@ a browser extension that help you access *openlayers* api doc with autocomplete 
  
 ## Install
 ### from store
-🙈 *TODO*  (Edge in review)
+- [Edge Add-ons](https://microsoftedge.microsoft.com/addons/search/ol%20search)
 ### from source
 ```shell
 git clone https://github.com/yuhangch/ol-search.git
