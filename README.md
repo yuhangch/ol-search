@@ -1,4 +1,7 @@
-# ol search 🚧
+# OL Search 🔍
+
+[![Microsoft Edge](https://img.shields.io/badge/edge--add--ons-v0.1.2-1D4F8C)](https://microsoftedge.microsoft.com/addons/detail/ol-search/feooodhgjmplabaneabphdnbljlelgka)
+[![license-apache](https://img.shields.io/badge/license-Apache-yellow.svg)](https://github.com/yuhangch/ol-search/blob/main/LICENCE)
 
 a browser extension that help you access *openlayers* api doc with autocomplete quickly.
 
